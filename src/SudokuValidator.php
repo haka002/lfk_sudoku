@@ -22,7 +22,8 @@ class SudokuValidator
 
 		return
 			$this->isValidBoard($board)
-			&& $this->isValidColumns($board);
+			&& $this->isValidColumns($board)
+			&& $this->isValidSmallBoards($board);
 	}
 
 	/**
@@ -149,5 +150,40 @@ class SudokuValidator
 		}
 
 		return $this->isValidRows($columns);
+	}
+
+	/**
+	 * @param array $board
+	 *
+	 * @return bool
+	 */
+	private function isValidSmallBoards(array $board): bool
+	{
+		// Column
+		for ($i = 0; $i < static::DIMENSION_COUNT; $i = $i + 3)
+		{
+			// 3x3 small board 3 times (start indexes
+			for ($j = 0; $j < static::DIMENSION_COUNT; $j = $j + 3)
+			{
+				// get the 3x3 items
+				for ($k = 0; $k < 3; $k++)
+				{
+					// get the 3x3 items
+					for ($l = 0; $l < 3; $l++)
+					{
+						$smallBoard[$k][$l] = $board[$k + $i][$l + $j];
+					}
+				}
+
+				if (
+					$this->isValidColumns($smallBoard)
+					&& $this->isValidRows($smallBoard)
+				) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }
